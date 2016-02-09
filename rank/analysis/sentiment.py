@@ -1,2 +1,2 @@
-def get_mood(word):
+def get_mood(_in):
     return 0
