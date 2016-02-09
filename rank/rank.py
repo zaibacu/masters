@@ -1,4 +1,5 @@
 def main(input, output):
+    from rank.analysis.sentiment import get_mood
     input.read()
     output.write("0")
 
