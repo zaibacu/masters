@@ -5,6 +5,3 @@ def main(input, output):
     res = sum([get_mood(w) for w in words])
     output.write("{0}".format(res))
 
-if __name__ == "__main__":
-    import sys
-    main(sys.stdin, sys.stdout)
