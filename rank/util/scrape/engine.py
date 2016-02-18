@@ -3,12 +3,12 @@ logger = logging.getLogger(__name__)
 
 
 class Engine(object):
-    def read(self, url):
+    def read(self, url, cookies=None):
         pass
 
 
 class StaticEngine(Engine):
-    def read(self, url):
+    def read(self, url, cookies=None):
         from urllib.request import urlopen
         from urllib.error import HTTPError
         try:
@@ -22,7 +22,7 @@ class PhantomEngine(Engine):
     def __init__(self, use_tor=False):
         self.use_tor = use_tor
 
-    def read(self, url):
+    def read(self, url, cookies=None):
         from selenium import webdriver
         from . import pimp_my_selenium
         if self.use_tor:
