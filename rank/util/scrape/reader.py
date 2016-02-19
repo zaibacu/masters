@@ -14,6 +14,17 @@ class SiteReader(object):
         else:
             self.engine = engine
 
+        self.headers = None
+        self.cookies = None
+
+    def add_headers(self, **kwargs):
+        for key, val in kwargs.items():
+            self.headers[key] = val
+
+    def add_cookies(self, **kwargs):
+        for key, val in kwargs.items():
+            self.cookies[key] = val
+
     def add_link(self, url):
         logger.debug("Adding URL: {0}".format(url))
         self.queue.put(url)
@@ -22,7 +33,7 @@ class SiteReader(object):
         while not self.queue.empty():
             url = self.queue.get()
             logger.debug("Scrapping URL: {0}".format(url))
-            raw = self.engine.read(url)
+            raw = self.engine.read(url, self.headers, self.cookies)
             if raw:
                 yield self._process(raw), url
 
