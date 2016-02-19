@@ -10,10 +10,9 @@ class Engine(object):
 
 class StaticEngine(Engine):
     def read(self, url, headers=None, cookies=None):
-        from urllib.error import HTTPError
         try:
             return requests.get(url, headers=headers, cookies=cookies)
-        except HTTPError as e:
+        except Exception as e:
             logger.error(e, "scrapping \"{0}\" failed".format(url))
             return None
 
