@@ -1,18 +1,18 @@
 import logging
+import requests
 logger = logging.getLogger(__name__)
 
 
 class Engine(object):
-    def read(self, url, cookies=None):
+    def read(self, url, headers=None, cookies=None):
         pass
 
 
 class StaticEngine(Engine):
-    def read(self, url, cookies=None):
-        from urllib.request import urlopen
+    def read(self, url, headers=None, cookies=None):
         from urllib.error import HTTPError
         try:
-            return urlopen(url).read().decode("UTF-8")
+            return requests.get(url, headers=headers, cookies=cookies)
         except HTTPError as e:
             logger.error(e, "scrapping \"{0}\" failed".format(url))
             return None
@@ -30,7 +30,8 @@ class PhantomEngine(Engine):
         else:
             self.driver = webdriver.PhantomJS()
 
-    def read(self, url, cookies=None):
+    def read(self, url, headers=None, cookies=None):
+        self.driver.add_cookie(cookies)
         self.driver.get(url)
         raw = self.driver.page_source
         return raw
