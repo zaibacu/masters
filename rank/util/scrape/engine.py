@@ -20,20 +20,17 @@ class StaticEngine(Engine):
 
 class PhantomEngine(Engine):
     def __init__(self, use_tor=False):
-        self.use_tor = use_tor
-
-    def read(self, url, cookies=None):
         from selenium import webdriver
         from . import pimp_my_selenium
-        if self.use_tor:
+        if use_tor:
             path = "/usr/local/bin/phantomjs"
             args = ["--proxy=localhost:9030", "--proxy-type=socks5"]
-            driver = webdriver.PhantomJS(path, service_args=args)
-            pimp_my_selenium(driver)
-
+            self.driver = webdriver.PhantomJS(path, service_args=args)
+            pimp_my_selenium(self.driver)
         else:
-            driver = webdriver.PhantomJS()
-        driver.get(url)
-        raw = driver.page_source
-        driver.close()
+            self.driver = webdriver.PhantomJS()
+
+    def read(self, url, cookies=None):
+        self.driver.get(url)
+        raw = self.driver.page_source
         return raw
