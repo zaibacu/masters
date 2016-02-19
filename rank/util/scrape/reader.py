@@ -14,8 +14,8 @@ class SiteReader(object):
         else:
             self.engine = engine
 
-        self.headers = None
-        self.cookies = None
+        self.headers = {}
+        self.cookies = {}
 
     def add_headers(self, **kwargs):
         for key, val in kwargs.items():

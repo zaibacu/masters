@@ -11,7 +11,7 @@ class Engine(object):
 class StaticEngine(Engine):
     def read(self, url, headers=None, cookies=None):
         try:
-            return requests.get(url, headers=headers, cookies=cookies)
+            return requests.get(url, headers=headers, cookies=cookies).content
         except Exception as e:
             logger.error(e, "scrapping \"{0}\" failed".format(url))
             return None
