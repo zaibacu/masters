@@ -1,9 +1,6 @@
-# url: http://www.torrent.ai/lt/torrents?search=batman&cats%5B%5D=33&cats%5B%5D=43&cats%5B%5D=34&cats%5B%5D=32
-
 from rank.util.scrape.reader import SiteReader
 from rank.util.scrape.engine import StaticEngine
 from . import Base
-import requests
 
 
 def payload(user, passw):
