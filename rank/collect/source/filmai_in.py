@@ -21,12 +21,17 @@ class FilmaiInSource(Base):
                  for url in root]
         keys = key.lower().split(" ")
         patt = re.compile(r"/(?P<movie_id>\d+)")
-        ids = map(lambda x: patt.search(x).group("movie_id"), filter(lambda x: all([key in x for key in keys]), links))
+
+        def extract_id(x):
+            res = patt.search(x)
+            if res:
+                return res.group("movie_id")
+
+        ids = map(extract_id, filter(lambda x: all([key in x for key in keys]), links))
         for link in map(lambda x: "http://filmai.in/komentarai/{0}/".format(x), ids):
             self.reader.add_link(link)
 
         for bs, url in self.reader.scrape():
-            # comment_blocks = bs.findAll("div", {"class": "notes-light"})
             for comment in bs.findAll("div", id=lambda x: x and x.startswith("comm-id-")):
                 yield comment.text.strip()
 
