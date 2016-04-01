@@ -9,7 +9,7 @@ def main(args, _in, _out):
 
 if __name__ == "__main__":
     import sys
-    from argparse import ArgumentParser()
+    from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("-l", help="Take l most common items", type=int, default=1000)
     main(parser.parse_args(), sys.stdin, sys.stdout)
