@@ -9,7 +9,7 @@ def purge(raw):
 
 
 def get_words(raw):
-    return [w for w in raw.lower().split(" ") if len(w) > 0]
+    return [purge(w) for w in raw.lower().split(" ") if len(w) > 0]
 
 
 def main(_in, _out):
