@@ -8,8 +8,12 @@ def purge(raw):
     return re.sub(r"[{0}]".format("".join(escape_chars)), r" ", raw)
 
 
+def remove_whitespace(word):
+    return re.sub(r"\s", r"", word)
+
+
 def get_words(raw):
-    return [w for w in purge(raw).lower().split(" ") if len(w) > 0]
+    return filter(lambda x: len(x) > 0, [remove_whitespace(w) for w in purge(raw).lower().split(" ")])
 
 
 def main(_in, _out):
