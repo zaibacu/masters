@@ -42,6 +42,6 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("-f", help="Dictionary file")
-    parser.add_argument("--matcher_fn", help="class for matcher function", default="rank.util.levenshtein")
-    parser.add_argument("--max_dist", help="maximum distance to assume equal", default=2)
+    parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.levenshtein)", default="rank.util.levenshtein")
+    parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 2)", default=2)
     main(parser.parse_args(), sys.stdin, sys.stdout)
