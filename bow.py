@@ -13,9 +13,12 @@ def bow_string(bow):
     return " ".join(["f{0}:{1}".format(item[0], 1.0 if item[1] else 0.0) for item in z])
 
 
-def vw_model(rating, bow):
+def vw_model(bow, rating=None):
     # [Label] [Importance] [Base] [Tag]|Namespace Features |Namespace Features
-    return "{0} 1.0 |bow {1}".format(rating, bow_string(bow))
+    if rating:
+        return "{0} 1.0 |bow {1}".format(rating, bow_string(bow))
+    else:
+        return "|bow {0}".format(bow_string(bow))
 
 
 def clean(x):
@@ -34,7 +37,7 @@ def main(args, _in, _out):
     raw = list(map(clean, _in.readlines()))
 
     bow = compute_bow(raw, _dict, matcher, args.max_dist)
-    _out.write("{0}".format(vw_model(0.0, bow)))
+    _out.write("{0}".format(vw_model(bow)))
 
 
 if __name__ == "__main__":
