@@ -1,5 +1,11 @@
-def compute_bow(words, dictionary):
-    return [any([s in words for s in d]) for d in dictionary]
+def compute_bow(words, dictionary, matcher, limit):
+    return [any([True
+                 for s in d
+                 for w in words
+                 if matcher(s, w) <= limit
+                 ])
+
+            for d in dictionary]
 
 
 def bow_string(bow):
@@ -17,6 +23,9 @@ def clean(x):
 
 
 def main(args, _in, _out):
+    parts = args.matcher_fn.split(".")
+    module = __import__(".".join(parts[:-1]), fromlist=[""])
+    matcher = getattr(module, parts[-1])
     _dict = []
     with open(args.f, "r") as f:
         for l in f:
@@ -24,7 +33,7 @@ def main(args, _in, _out):
 
     raw = list(map(clean, _in.readlines()))
 
-    bow = compute_bow(raw, _dict)
+    bow = compute_bow(raw, _dict, matcher, args.max_dist)
     _out.write("{0}".format(bow_string(bow)))
 
 
@@ -33,4 +42,6 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("-f", help="Dictionary file")
+    parser.add_argument("--matcher_fn", help="class for matcher function", default="rank.util.levenshtein")
+    parser.add_argument("--max_dist", help="maximum distance to assume equal", default=2)
     main(parser.parse_args(), sys.stdin, sys.stdout)
