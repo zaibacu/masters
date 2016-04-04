@@ -34,7 +34,7 @@ def main(args, _in, _out):
     raw = list(map(clean, _in.readlines()))
 
     bow = compute_bow(raw, _dict, matcher, args.max_dist)
-    _out.write("{0}".format(vw_model(0.0, bow_string(bow))))
+    _out.write("{0}".format(vw_model(0.0, bow)))
 
 
 if __name__ == "__main__":
