@@ -16,18 +16,7 @@ def get_comments(title: str, data: dict = None) -> list:
     torrent_lt.auth(get_param("torrentlt_user"), get_param("torrentlt_pass"))
     filmai_in = FilmaiInSource()
 
-    try:
-        lm_comments = [comment for comment in lm.search(title)]
-    except:
-        lm_comments = []
-
-    try:
-        torrent_lt_comments = [comment for comment in torrent_lt.search(title)]
-    except:
-        torrent_lt_comments = []
-
-    try:
-        filmai_in_comments = [comment for comment in filmai_in.search(title)]
-    except:
-        filmai_in_comments = []
+    lm_comments = [comment for comment in lm.search(title)]
+    torrent_lt_comments = [comment for comment in torrent_lt.search(title)]
+    filmai_in_comments = [comment for comment in filmai_in.search(title)]
     return lm_comments + torrent_lt_comments + filmai_in_comments
