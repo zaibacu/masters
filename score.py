@@ -13,10 +13,14 @@ def parse_num(n: str) -> float:
         return 0
 
 
-def score(numbers: list, base: int) -> float:
+def score(numbers: list, base: int) -> list:
+    def transform(x):
+        return (abs(-1 - x) * base) / 2
+
+    data = map(transform, numbers)
     import pandas as pd
-    df = pd.DataFrame(numbers)
-    return df.sum()
+    df = pd.Series(data)
+    return [df.std(), df.mean(), df.median()]
 
 
 def main(args, _in, _out):
