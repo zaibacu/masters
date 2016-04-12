@@ -13,10 +13,14 @@ def parse_num(n: str) -> float:
         return 0
 
 
+def score(numbers: list, base: int) -> float:
+    return sum(numbers)
+
+
 def main(args, _in, _out):
     base = args.base
     numbers = [parse_num(num) for num in _in.read().split("\n")]
-    _out.write("{0}\n".format(sum(numbers)))
+    _out.write("{0}\n".format(score(numbers, base)))
 
 if __name__ == "__main__":
     import sys
