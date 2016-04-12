@@ -5,3 +5,5 @@ wheel==0.26.0
 flask
 redis
 python-Levenshtein
+pandas
+numpy

@@ -14,7 +14,9 @@ def parse_num(n: str) -> float:
 
 
 def score(numbers: list, base: int) -> float:
-    return sum(numbers)
+    import pandas as pd
+    df = pd.DataFrame(numbers)
+    return df.sum()
 
 
 def main(args, _in, _out):
