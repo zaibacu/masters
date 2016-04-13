@@ -12,8 +12,8 @@ def make_ngram(g, n):
 
 def unpack(raw: str) -> list:
     import re
-    patt = re.compile(r"(?P<item>.*)*")
-    results = patt.findall(raw)
+    patt = re.compile(r"((\w|[0-9,/!?])+)")
+    results = list(map(lambda x: x[0], patt.findall(raw)))
     if len(results) > 0:
         return results
     else:
