@@ -1,5 +1,11 @@
+def ngram(lst: list, n: int):
+    return zip(*[lst[i:] for i in range(n)])
+
+
 def main(args, _in, _out):
-    pass
+    items = _in.read().split("\n")
+    for item in ngram(items, args.n):
+        _out.write("({0})\n".format(item))
 
 if __name__ == "__main__":
     import sys
