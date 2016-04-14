@@ -1,3 +1,7 @@
+import unittest
+from rank.util.ngram import unpack
+
+
 def compute_bow(words, dictionary, matcher, limit):
     return [any([True
                  for s in d
@@ -25,16 +29,28 @@ def clean(x):
     return x.replace("\n", "").strip()
 
 
+def load_dict(f):
+    for l in f:
+        yield set(map(unpack, map(clean, l.split(","))))
+
+
+class BowTestCase(unittest.TestCase):
+    def test_dict(self):
+        from io import StringIO
+        buff = StringIO("hello\nworld\n")
+        result = list(load_dict(buff))
+        expected = [{("hello", )}, {("world",)}]
+        self.assertEqual(expected, result)
+
+
 def main(args, _in, _out):
     parts = args.matcher_fn.split(".")
     module = __import__(".".join(parts[:-1]), fromlist=[""])
     matcher = getattr(module, parts[-1])
-    _dict = []
     with open(args.f, "r") as f:
-        for l in f:
-            _dict.append(set(map(clean, l.split(","))))
+        _dict = load_dict(f)
 
-    raw = list(map(clean, _in.readlines()))
+    raw = list(map(unpack, map(clean, _in.readlines())))
 
     bow = compute_bow(raw, _dict, matcher, args.max_dist)
     _out.write("{0}".format(vw_model(bow)))
