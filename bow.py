@@ -108,7 +108,7 @@ def main(args, _in, _out):
     raw = list(load_raw(_in))
 
     bow = compute_bow(raw, _dict, matcher, args.max_dist)
-    _out.write("{0}".format(vw_model(bow)))
+    _out.write("{0}".format(vw_model(bow, args.label)))
 
 
 if __name__ == "__main__":
@@ -118,4 +118,5 @@ if __name__ == "__main__":
     parser.add_argument("-f", help="Dictionary file")
     parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.levenshtein)", default="rank.util.levenshtein")
     parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 2)", default=2)
+    parser.add_argument("--label", help="Give label for this BOW", default=None)
     main(parser.parse_args(), sys.stdin, sys.stdout)
