@@ -33,6 +33,12 @@ class NGramTestCase(unittest.TestCase):
         result = unpack(raw)
         self.assertEqual(("hello",), result)
 
+    def test_unpack_complex(self):
+        raw = "(hello,hi|world)"
+        result = unpack(raw)
+        expected = ("hello,hi", "world",)
+        self.assertEqual(expected, result)
+
 
 if __name__ == "__main__":
     import sys
