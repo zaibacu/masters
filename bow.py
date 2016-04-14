@@ -34,12 +34,23 @@ def load_dict(f):
         yield set(map(unpack, map(clean, l.split(","))))
 
 
+def load_raw(f):
+    return map(unpack, map(clean, f.readlines()))
+
+
 class BowTestCase(unittest.TestCase):
     def test_dict(self):
         from io import StringIO
         buff = StringIO("hello\nworld\n")
         result = list(load_dict(buff))
         expected = [{("hello", )}, {("world",)}]
+        self.assertEqual(expected, result)
+
+    def test_raw(self):
+        from io import StringIO
+        buff = StringIO("hello\nworld\n")
+        result = list(load_raw(buff))
+        expected = [("hello", ), ("world",)]
         self.assertEqual(expected, result)
 
 
@@ -50,7 +61,7 @@ def main(args, _in, _out):
     with open(args.f, "r") as f:
         _dict = load_dict(f)
 
-    raw = list(map(unpack, map(clean, _in.readlines())))
+    raw = list(load_raw(_in))
 
     bow = compute_bow(raw, _dict, matcher, args.max_dist)
     _out.write("{0}".format(vw_model(bow)))
