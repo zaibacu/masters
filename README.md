@@ -18,8 +18,8 @@ Creating BOW
 
 Training
 ========
-`vw data/comments.train.data -l 10 -c --passes 25 --holdout_off -f data/comments.model`
+`vw data/comments.train.data -l 10 -c --passes 25 --holdout_off -f data/model.vw`
 
 Prediction
 ==========
-`vw data/comments.data -p pred.txt --quiet`
+`vw -t -i data/model.vw data/comments.data -p pred.txt --quiet`
