@@ -39,6 +39,10 @@ def load_raw(f):
 
 
 class BowTestCase(unittest.TestCase):
+    def setUpClass():
+        import logging
+        logging.basicConfig(level=logging.DEBUG)
+
     def test_dict(self):
         from io import StringIO
         buff = StringIO("hello\nworld\n")
@@ -51,6 +55,17 @@ class BowTestCase(unittest.TestCase):
         buff = StringIO("hello\nworld\n")
         result = list(load_raw(buff))
         expected = [("hello", ), ("world",)]
+        self.assertEqual(expected, result)
+
+    def test_basic_bow(self):
+        from io import StringIO
+        from rank.util import levenshtein
+        d = StringIO("hello,hi\nworld\n")
+        r = StringIO("hi\nthere\nworld\n")
+        _dict = load_dict(d)
+        _raw = load_raw(r)
+        result = compute_bow(_raw, _dict, levenshtein, 0)
+        expected = [True, False]
         self.assertEqual(expected, result)
 
 
