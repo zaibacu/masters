@@ -2,7 +2,7 @@ import unittest
 from rank.util.ngram import unpack
 
 
-def compute_bow(words, dictionary, matcher, limit):
+def compute_bow(words: list, dictionary: list, matcher: callable, limit: int):
     return [any([True
                  for s in d
                  for w in words
@@ -61,9 +61,9 @@ class BowTestCase(unittest.TestCase):
         from io import StringIO
         from rank.util import levenshtein
         d = StringIO("hello,hi\nworld\n")
-        r = StringIO("hi\nthere\nworld\n")
-        _dict = load_dict(d)
-        _raw = load_raw(r)
+        r = StringIO("hi\nthere\nfellow\n")
+        _dict = list(load_dict(d))
+        _raw = list(load_raw(r))
         result = compute_bow(_raw, _dict, levenshtein, 0)
         expected = [True, False]
         self.assertEqual(expected, result)
@@ -74,7 +74,7 @@ def main(args, _in, _out):
     module = __import__(".".join(parts[:-1]), fromlist=[""])
     matcher = getattr(module, parts[-1])
     with open(args.f, "r") as f:
-        _dict = load_dict(f)
+        _dict = list(load_dict(f))
 
     raw = list(load_raw(_in))
 
