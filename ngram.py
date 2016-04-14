@@ -25,9 +25,8 @@ class NGramTestCase(unittest.TestCase):
     def test_unpack(self):
         raw = "(hello|world)"
         result = unpack(raw)
-        print(result)
         expected = ["hello", "world"]
-        # self.assertEqual(expected, result)
+        self.assertEqual(expected, result)
 
 
 if __name__ == "__main__":
