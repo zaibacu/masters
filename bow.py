@@ -44,6 +44,7 @@ def load_raw(f):
 
 
 class BowTestCase(unittest.TestCase):
+    @staticmethod
     def setUpClass():
         import logging
         logging.basicConfig(level=logging.DEBUG)
