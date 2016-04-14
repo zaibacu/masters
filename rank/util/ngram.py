@@ -10,11 +10,11 @@ def make_ngram(g, n):
     return zip(*[g[i:] for i in range(n)])
 
 
-def unpack(raw: str) -> list:
+def unpack(raw: str) -> tuple:
     import re
     patt = re.compile(r"((\w|[0-9,/!?])+)")
-    results = list(map(lambda x: x[0], patt.findall(raw)))
+    results = tuple(map(lambda x: x[0], patt.findall(raw)))
     if len(results) > 0:
         return results
     else:
-        return raw
+        return tuple(raw)
