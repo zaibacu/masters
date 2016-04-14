@@ -14,7 +14,7 @@ Creating dict
 
 Creating BOW
 ============
-`cat test_text.txt | python word_getter.py | python bow.py -f data/test.dict.txt`
+`cat test_text.txt | sh iter.sh "sh bow_pipe.sh"`
 
 Training
 ========
