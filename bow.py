@@ -94,10 +94,8 @@ class BowTestCase(unittest.TestCase):
 
         _dict = list(load_dict(d_buff))
         _raw = list(load_raw(r_buff))
-        print("Dict: {0}".format(_dict))
-        print("Text: {0}".format(_raw))
         result = compute_bow(_raw, _dict, levenshtein, 0)
-        print(result)
+        self.assertEqual([True, True], result)
 
 
 def main(args, _in, _out):
