@@ -44,5 +44,5 @@ if __name__ == "__main__":
     import sys
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    parser.add_argument("-n", default=2, help="Number of n grams")
+    parser.add_argument("-n", default=2, type=int, help="Number of n grams")
     main(parser.parse_args(), sys.stdin, sys.stdout)
