@@ -24,7 +24,7 @@ def bow_string(bow):
 
 def vw_model(bow, rating=None):
     # [Label] [Importance] [Base] [Tag]|Namespace Features |Namespace Features
-    if rating and rating in ["1", "-1"]:
+    if rating and rating != "?":
         return "{0} 1.0 |bow {1}".format(rating, bow_string(bow))
     else:
         return "|bow {0}".format(bow_string(bow))

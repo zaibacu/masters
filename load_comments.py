@@ -38,12 +38,12 @@ def main(args):
     with open(args.o1, "w") as f:
         for comment in train_data:
             text = comment.text
-            f.write("{1}\t{0}\n".format(text.replace("\n", " "), comment.rating))
+            f.write("{1}|{0}\n".format(text.replace("\n", " "), comment.rating))
 
     with open(args.o2, "w") as f:
         for comment in test_data:
             text = comment.text
-            f.write("?\t{0}\n".format(text.replace("\n", " ")))
+            f.write("?|{0}\n".format(text.replace("\n", " ")))
 
 if __name__ == "__main__":
     from argparse import ArgumentParser
