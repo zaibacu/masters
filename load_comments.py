@@ -43,7 +43,7 @@ def main(args):
     with open(args.o2, "w") as f:
         for comment in test_data:
             text = comment.text
-            f.write("?|{0}\n".format(text.replace("\n", " ")))
+            f.write("{1}|{0}\n".format(text.replace("\n", " "), comment.rating))
 
 if __name__ == "__main__":
     from argparse import ArgumentParser
