@@ -7,7 +7,10 @@ def make_trigram(g):
 
 
 def make_ngram(g, n):
-    return zip(*[g[i:] for i in range(n)])
+    if n > 1:
+        return zip(*[g[i:] for i in range(n)])
+    else:
+        return g
 
 
 def unpack(raw: str) -> tuple:
