@@ -18,7 +18,7 @@ def main(args, _in, _out):
             True
             for w1 in g1
             for w2 in g2
-            if len(w1) > args.n and len(w1) > args.n
+            if len(w1) > (args.n * 2) and (len(w2) > args.n * 2)
             if levenshtein(w1, w2) <= args.n
         ])
 
