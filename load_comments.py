@@ -45,6 +45,11 @@ def main(args):
             text = comment.text
             f.write("{1}|{0}\n".format(text.replace("\n", " "), comment.rating))
 
+    with open(args.f, "w") as f:
+        for comment in comments:
+            text = comment.txt
+            f.write("{0}\n".format(text))
+
 if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
@@ -52,4 +57,5 @@ if __name__ == "__main__":
     parser.add_argument("--test", type=int, default=50, help="count of items for test")
     parser.add_argument("-o1", help="train output file")
     parser.add_argument("-o2", help="test output file")
+    parser.add_argument("-f", default="comments.data", help="Full output file")
     main(parser.parse_args())
