@@ -47,7 +47,7 @@ def main(args):
 
     with open(args.f, "w") as f:
         for comment in comments:
-            text = comment.txt
+            text = comment.text
             f.write("{0}\n".format(text))
 
 if __name__ == "__main__":
