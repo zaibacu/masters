@@ -69,7 +69,8 @@ def main(args, _in, _out):
 
     groups = map(lambda x: set(map(lambda y: y.strip(), x.split(","))), _in.read().split("\n"))
 
-    clustering(groups, matcher)
+    for result in clustering(groups, matcher, args.max_dist):
+        _out.write("{0}\n".format(",".join(result)))
 
 
 if __name__ == "__main__":
