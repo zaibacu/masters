@@ -59,7 +59,7 @@ def clustering(groups, matcher, max_dist):
             break
 
     logger.debug("Final df: {0}".format(df))
-    return list(df["left"].map(lambda x: tuple(sorted(x))).unique())
+    return list(df["left"].map(lambda x: tuple(sorted(x))).unique()) + [g for g in groups if len(g) <= max_dist]
 
 
 class KNNTestCase(unittest.TestCase):
