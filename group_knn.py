@@ -1,7 +1,5 @@
 import logging
 import unittest
-from collections import namedtuple
-ClusterPair = namedtuple("ClusterPair", ["left", "right", "distance"])
 
 logger = logging.getLogger(__name__)
 
@@ -41,17 +39,21 @@ def clustering(groups, matcher, max_dist):
         return list([distance(pair[0], pair[1], matcher) for pair in zip(left, right)])
 
     while True:
+        df = df[df.right != set()]
         df["distance"] = df_dist(df["left"], df["right"])
         logger.debug(df)
         _min = df.ix[df["distance"].idxmin()]
         if _min["distance"] <= max_dist:
             for i in _min["right"]:
                 _min["left"].add(i)
+                yield tuple(sorted(_min["left"]))
             _min["right"].clear()
         else:
             break
 
-    return set(filter(lambda x: len(x) > 0, map(lambda x: tuple(sorted(x)), df["left"])))
+    left_overs = filter(lambda x: len(x) > 0, map(lambda x: tuple(sorted(x)), df["left"]))
+    for item in left_overs:
+        yield tuple(sorted(item))
 
 
 class KNNTestCase(unittest.TestCase):
@@ -61,15 +63,16 @@ class KNNTestCase(unittest.TestCase):
     def test_grouping_step(self):
         from rank.util import levenshtein
         groups = [{"a", "b", "c"}, {"c", "d", "f"}]
-        result = clustering(groups, levenshtein, 2)
+        result = set(clustering(groups, levenshtein, 2))
         expected = {("a", "b", "c", "d", "f")}
         self.assertSetEqual(expected, result)
 
     def test_different_sets(self):
         from rank.util import levenshtein
         groups = [{"labas", "vakaras"}, {"rytoj", "bus"}]
-        result = clustering(groups, levenshtein, 2)
+        result = set(clustering(groups, levenshtein, 2))
         expected = {("labas", "vakaras"), ("bus", "rytoj")}
+        logger.debug("Result: {0}".format(result))
         self.assertSetEqual(expected, result)
 
 
