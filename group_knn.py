@@ -28,7 +28,9 @@ def clustering(groups, matcher, max_dist):
     df = pd.DataFrame([(g1, g2)
                       for g1 in groups
                       for g2 in groups
-                      if g1 != g2], columns=["left", "right"])
+                      if g1 != g2
+                      if len(g1) > max_dist and len(g2) > max_dist
+                    ], columns=["left", "right"])
 
     df = df.where(np.tril(np.ones(df.shape)).astype(np.bool))
 
