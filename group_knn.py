@@ -7,19 +7,18 @@ logger = logging.getLogger(__name__)
 
 
 def distance(g1, g2, matcher):
-    import numpy as np
     logger.debug("Got {0} and {1} to match".format(g1, g2))
-    if isinstance(g1, set) and isinstance(g2, set):
-        return min([
-                    matcher(i1, i2)
-                    for i1 in g1
-                    for i2 in g2
-                ])
-    else:
-        return np.nan
+    if len(g1) == 0 or len(g2) == 0:
+        return 100  # big enough number
+
+    return min([
+                matcher(i1, i2)
+                for i1 in g1
+                for i2 in g2
+            ])
 
 
-def clustering(groups, matcher):
+def clustering(groups, matcher, max_dist):
     import pandas as pd
     import numpy as np
 
@@ -28,14 +27,23 @@ def clustering(groups, matcher):
                       for g2 in groups
                       if g1 != g2], columns=["left", "right"])
 
+    df = df.where(np.tril(np.ones(df.shape)).astype(np.bool)).dropna()
+
     def df_dist(left, right):
         return list([distance(pair[0], pair[1], matcher) for pair in zip(left, right)])
 
-    df = df.where(np.tril(np.ones(df.shape)).astype(np.bool))
-    df["distance"] = df_dist(df["left"], df["right"])
+    while True:
+        df["distance"] = df_dist(df["left"], df["right"])
+        _min = df.ix[df["distance"].idxmin()]
+        if _min["distance"] < max_dist:
+            for i in _min["right"]:
+                _min["left"].add(i)
+            _min["right"].clear()
+            logger.debug(df)
+        else:
+            break
 
-    logger.debug(df)
-    return df
+    return df["left"]
 
 
 class KNNTestCase(unittest.TestCase):
@@ -46,8 +54,9 @@ class KNNTestCase(unittest.TestCase):
     def test_grouping_step(self):
         from rank.util import levenshtein
         groups = [{"a", "b", "c"}, {"c", "d", "f"}]
-        result = clustering(groups, levenshtein)
-        logger.debug("Minimum: {0}".format(result.ix[result["distance"].idxmin()]))
+        result = clustering(groups, levenshtein, 2).values.tolist()
+        expected = [{"a", "b", "c", "d", "f"}]
+        self.assertEqual(expected, result)
 
 
 def main(args, _in, _out):
