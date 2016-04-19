@@ -44,7 +44,7 @@ def clustering(groups, matcher, max_dist):
         df["distance"] = df_dist(df["left"], df["right"])
         logger.debug(df)
         _min = df.ix[df["distance"].idxmin()]
-        if _min["distance"] < max_dist:
+        if _min["distance"] <= max_dist:
             for i in _min["right"]:
                 _min["left"].add(i)
             _min["right"].clear()
