@@ -26,6 +26,8 @@ def clustering(groups, matcher, max_dist):
     import pandas as pd
     import numpy as np
 
+    logger.debug("Got groups: {0}".format(groups))
+
     df = pd.DataFrame([(g1, g2)
                       for g1 in groups
                       for g2 in groups
@@ -79,7 +81,7 @@ def main(args, _in, _out):
     module = __import__(".".join(parts[:-1]), fromlist=[""])
     matcher = getattr(module, parts[-1])
 
-    groups = map(lambda x: set(map(lambda y: y.strip(), x.split(","))), _in.read().split("\n"))
+    groups = list(map(lambda x: set(map(lambda y: y.strip(), x.split(","))), _in.read().split("\n")))
 
     for result in clustering(groups, matcher, args.max_dist):
         _out.write("{0}\n".format(",".join(result)))
