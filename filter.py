@@ -14,6 +14,6 @@ if __name__ == "__main__":
     import sys
 
     parser = ArgumentParser()
-    parser.add_argument("-l", help="Minimal word length", default=3)
+    parser.add_argument("-l", help="Minimal word length", default=3, type=int)
     parser.add_argument("-i", help="Ignore list")
     main(parser.parse_args(), sys.stdin, sys.stdout)
