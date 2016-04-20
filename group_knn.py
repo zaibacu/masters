@@ -20,7 +20,7 @@ def distance(g1, g2, matcher):
             ])
 
 
-def clustering(groups, matcher, max_dist):
+def clustering(k, groups, matcher, max_dist):
     import pandas as pd
     import numpy as np
 
@@ -38,26 +38,17 @@ def clustering(groups, matcher, max_dist):
     def df_dist(left, right):
         return list([distance(pair[0], pair[1], matcher) for pair in zip(left, right)])
 
-    while True:
-        df["distance"] = df_dist(df["left"], df["right"])
-        logger.debug(df)
-        if df.size == 0:
-            break
+    df["distance"] = df_dist(df["left"], df["right"])
 
-        _min = df.ix[df["distance"].idxmin()]
-        if _min["distance"] <= max_dist:
-            for i in _min["right"]:
-                _min["left"].add(i)
+    for_merge = df[df.distance <= max_dist]
+    logger.debug("Merging {0} pairs".format(len(for_merge)))
 
-            logger.info("Before filter: {0}".format(df))
-            df = df[df["left"] != _min["right"]]
+    for index, row in for_merge.sort_values(by="distance").iterrows():
+        logger.debug("Merge {0} and {1}".format(row["left"], row["right"]))
+        for i in row["right"]:
+            row["left"].add(i)
+        row["right"].clear()
 
-            _min["right"].clear()
-            logger.info("After filter: {0}".format(df))
-        else:
-            break
-
-    logger.debug("Final df: {0}".format(df))
     return list(df["left"].map(lambda x: tuple(sorted(x))).unique())
 
 
@@ -68,14 +59,14 @@ class KNNTestCase(unittest.TestCase):
     def test_grouping_step(self):
         from rank.util import levenshtein
         groups = [{"a", "b", "c"}, {"c", "d", "f"}]
-        result = clustering(groups, levenshtein, 2)
+        result = clustering(1, groups, levenshtein, 2)
         expected = [("a", "b", "c", "d", "f")]
         self.assertEqual(expected, result)
 
     def test_different_sets(self):
         from rank.util import levenshtein
         groups = [{"labas", "vakaras"}, {"rytoj", "bus"}]
-        result = clustering(groups, levenshtein, 2)
+        result = clustering(1, groups, levenshtein, 2)
         expected = [("labas", "vakaras"), ("bus", "rytoj")]
         logger.debug("Result: {0}".format(result))
         self.assertEqual(expected, result)
@@ -91,7 +82,7 @@ def main(args, _in, _out):
 
     groups = list(map(lambda x: set(map(lambda y: y.strip(), x.split(","))), _in.read().split("\n")))
 
-    for result in clustering(groups, matcher, args.max_dist):
+    for result in clustering(args.k, groups, matcher, args.max_dist):
         _out.write("{0}\n".format(",".join(result)))
 
 
