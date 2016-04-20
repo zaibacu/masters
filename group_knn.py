@@ -20,7 +20,7 @@ def distance(g1, g2, matcher):
             ])
 
 
-def clustering(k, groups, matcher, max_dist):
+def clustering(groups, matcher, max_dist):
     import pandas as pd
     import numpy as np
 
@@ -59,14 +59,14 @@ class KNNTestCase(unittest.TestCase):
     def test_grouping_step(self):
         from rank.util import levenshtein
         groups = [{"a", "b", "c"}, {"c", "d", "f"}]
-        result = clustering(1, groups, levenshtein, 2)
+        result = clustering(groups, levenshtein, 2)
         expected = [("a", "b", "c", "d", "f")]
         self.assertEqual(expected, result)
 
     def test_different_sets(self):
         from rank.util import levenshtein
         groups = [{"labas", "vakaras"}, {"rytoj", "bus"}]
-        result = clustering(1, groups, levenshtein, 2)
+        result = clustering(groups, levenshtein, 2)
         expected = [("labas", "vakaras"), ("bus", "rytoj")]
         logger.debug("Result: {0}".format(result))
         self.assertEqual(expected, result)
@@ -82,7 +82,7 @@ def main(args, _in, _out):
 
     groups = list(map(lambda x: set(map(lambda y: y.strip(), x.split(","))), _in.read().split("\n")))
 
-    for result in clustering(args.k, groups, matcher, args.max_dist):
+    for result in clustering(groups, matcher, args.max_dist):
         _out.write("{0}\n".format(",".join(result)))
 
 
@@ -93,5 +93,4 @@ if __name__ == "__main__":
     parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.levenshtein)", default="rank.util.levenshtein")
     parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 2)", default=2, type=int)
     parser.add_argument("--debug", help="Show debug output", action="store_true")
-    parser.add_argument("-k", help="Nearest Neighbors count", type=int, default=3)
     main(parser.parse_args(), sys.stdin, sys.stdout)
