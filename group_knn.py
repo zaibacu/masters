@@ -102,4 +102,5 @@ if __name__ == "__main__":
     parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.levenshtein)", default="rank.util.levenshtein")
     parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 2)", default=2, type=int)
     parser.add_argument("--debug", help="Show debug output", action="store_true")
+    parser.add_argument("-k", help="Nearest Neighbors count", type=int, default=3)
     main(parser.parse_args(), sys.stdin, sys.stdout)
