@@ -29,7 +29,6 @@ def clustering(groups, matcher, max_dist):
                       for g1 in groups
                       for g2 in groups
                       if g1 != g2
-                      if len(g1) > max_dist and len(g2) > max_dist
                     ], columns=["left", "right"])
 
     df = df.where(np.tril(np.ones(df.shape)).astype(np.bool))
@@ -59,7 +58,7 @@ def clustering(groups, matcher, max_dist):
             break
 
     logger.debug("Final df: {0}".format(df))
-    return list(df["left"].map(lambda x: tuple(sorted(x))).unique()) + [g for g in groups if len(g) <= max_dist]
+    return list(df["left"].map(lambda x: tuple(sorted(x))).unique())
 
 
 class KNNTestCase(unittest.TestCase):
@@ -101,6 +100,6 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.levenshtein)", default="rank.util.levenshtein")
-    parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 2)", default=2)
+    parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 2)", default=2, type=int)
     parser.add_argument("--debug", help="Show debug output", action="store_true")
     main(parser.parse_args(), sys.stdin, sys.stdout)
