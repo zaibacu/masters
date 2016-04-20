@@ -49,7 +49,7 @@ def clustering(groups, matcher, max_dist):
             row["left"].add(i)
         row["right"].clear()
 
-    return list(df["left"].map(lambda x: tuple(sorted(x))).unique())
+    return list(df[df.left != set()]["left"].map(lambda x: tuple(sorted(x))).unique())
 
 
 class KNNTestCase(unittest.TestCase):
