@@ -2,19 +2,31 @@ import unittest
 from rank.util.ngram import unpack
 
 
-def compute_bow(words: list, dictionary: list, matcher: callable, limit: int):
-    def word_inside_dict(_dict: list, word: str) -> bool:
+def word_inside_dict(_dict: list, word: str, matcher: callable, limit: int) -> bool:
         return any([True
                     for s in _dict
                     if matcher(s, word) <= limit
                     ])
 
-    def match_dict_item(item: tuple, word: tuple) -> bool:
-        return all([word_inside_dict(i, w)
-                    for i, w in zip(item, word)])
 
-    return [any([match_dict_item(d, w) for w in words])
-            for d in dictionary]
+def match_dict_item(item: tuple, word: tuple, matcher: callable, limit: int) -> bool:
+    return all([word_inside_dict(i, w, matcher, limit) for i, w in zip(item, word)])
+
+
+def bow_match(dict_item, words, matcher: callable, limit: int):
+    return any([match_dict_item(dict_item, w, matcher, limit) for w in words])
+
+
+def compute_bow(words: list, dictionary: list, matcher: callable, limit: int, multi: bool=False) -> map:
+    from functools import partial
+    transform = partial(bow_match, words=words, matcher=matcher, limit=limit)
+    if multi:
+        from multiprocessing import Pool
+
+        with Pool(20) as p:
+            return p.map(transform, dictionary)
+    else:
+        return map(transform, dictionary)
 
 
 def bow_string(bow):
@@ -107,7 +119,7 @@ def main(args, _in, _out):
 
     raw = list(load_raw(_in))
 
-    bow = compute_bow(raw, _dict, matcher, args.max_dist)
+    bow = list(compute_bow(raw, _dict, matcher, args.max_dist, args.multi))
     _out.write("{0}".format(vw_model(bow, args.label)))
 
 
@@ -119,4 +131,5 @@ if __name__ == "__main__":
     parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.levenshtein)", default="rank.util.levenshtein")
     parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 2)", default=2)
     parser.add_argument("--label", help="Give label for this BOW", default=None)
+    parser.add_argument("--multi", help="Use multiprocess environment for this calc", action="store_true")
     main(parser.parse_args(), sys.stdin, sys.stdout)
