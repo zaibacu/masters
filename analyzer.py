@@ -12,7 +12,6 @@ def parse_bow(line):
 
 def main(args, _in, _out):
     import pandas as pd
-    # format: -1 1.0 |bow f0:1.0 f1:1.0 f2:1.0 f3:1.0 f4:1.0 f5:1.0
     data = [parse_bow(line)
             for line in map(lambda x: x.strip(), _in.read().split("\n"))
             if len(line) > 0
@@ -22,13 +21,16 @@ def main(args, _in, _out):
     group = df.groupby("label")
     t = group.sum().transpose()
     t["diff"] = abs(t[-1] - t[1])/(t[-1] + t[1])
-    columns = t[t["diff"] > 0.3]  # Over 30% of difference
+    columns = t[t["diff"] > args.n].index
     optimized = df[columns]
+    from bow import vw_model
+    for line in [vw_model(d, str(l)) for l, d in zip(df["label"], optimized.values)]:
+        _out.write("{0}\n".format(line))
 
 
 if __name__ == "__main__":
     import sys
     from argparse import ArgumentParser
     parser = ArgumentParser()
-
+    parser.add_argument("-n", type=float, help="limit to discard column", default=0.3)
     main(parser.parse_args(), sys.stdin, sys.stdout)
