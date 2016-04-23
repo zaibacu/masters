@@ -34,14 +34,6 @@ def bow_string(bow):
     return " ".join(["f{0}:{1}".format(item[0], 1.0 if item[1] else 0.0) for item in z])
 
 
-def vw_model(bow, rating=None):
-    # [Label] [Importance] [Base] [Tag]|Namespace Features |Namespace Features
-    if rating and rating != "?":
-        return "{0} 1.0 |bow {1}".format(rating, bow_string(bow))
-    else:
-        return "|bow {0}".format(bow_string(bow))
-
-
 def clean(x):
     return x.replace("\n", "").strip()
 
@@ -118,9 +110,10 @@ def main(args, _in, _out):
         _dict = list(load_dict(f))
 
     raw = list(load_raw(_in))
+    from rank.util.feature import vw_model
 
     bow = list(compute_bow(raw, _dict, matcher, args.max_dist, args.multi))
-    _out.write("{0}".format(vw_model(bow, args.label)))
+    _out.write("{0}".format(vw_model(bow_string(bow), args.label)))
 
 
 if __name__ == "__main__":
