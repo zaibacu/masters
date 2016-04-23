@@ -43,13 +43,11 @@ def test_model(labels, predictions):
     cross_df = pd.Series(cross)
     cross_df["P"] = cross_df["TP"] + cross_df["FN"]
     cross_df["N"] = cross_df["FP"] + cross_df["TN"]
-    cross_df["TPR"] = cross_df["TP"] / cross_df["P"]
-    cross_df["TNR"] = cross_df["TN"] / cross_df["N"]
-    cross_df["FPR"] = cross_df["FP"] / cross_df["N"]
-    cross_df["FNR"] = cross_df["FN"] / cross_df["P"]
+    cross_df["recall"] = cross_df["TP"] / cross_df["P"]
     cross_df["precision"] = cross_df["TP"] / (cross_df["TP"] + cross_df["FP"])
     cross_df["accuracy"] = (cross_df["TP"] + cross_df["TN"])/ (cross_df["TP"] + cross_df["FP"] + cross_df["TN"] + cross_df["FN"])
-    cross_df["F1"] = (2 * cross_df["TP"]) / (2 * cross_df["TP"] + cross_df["FP"] + cross_df["FN"])
+    # (2 * cross_df["TP"]) / (2 * cross_df["TP"] + cross_df["FP"] + cross_df["FN"])
+    cross_df["F1"] = 2 * (cross_df["precision"] * cross_df["recall"]) / (cross_df["precision"] + cross_df["recall"])
     cross_df["MCC"] = (cross_df["TP"] * cross_df["TN"] - cross_df["FP"] * cross_df["FN"]) / np.sqrt(
         (cross_df["TP"] + cross_df["FP"]) *
         (cross_df["TP"] + cross_df["FN"]) *
