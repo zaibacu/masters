@@ -1,7 +1,4 @@
-r = 0
-
-
-def round_prediction(x):
+def round_prediction(x, r):
     if x > r:
         return 1
     elif x < r:
@@ -14,9 +11,9 @@ def get_count(lst):
     return len(lst)
 
 
-def test_model(labels, predictions):
+def test_model(labels, predictions, r):
     pairs = list(
-                map(lambda x: {"target": x[0], "prediction": round_prediction(x[1]) },
+                map(lambda x: {"target": x[0], "prediction": round_prediction(x[1], r)},
                       zip(labels, predictions))
                  )
 
@@ -71,7 +68,7 @@ def load_predictions(model):
 def main(args):
     labels = load_labels()
     model = load_predictions(args.model)
-    result = test_model(labels, model)
+    result = test_model(labels, model, args.r)
     print(result)
 
 
@@ -79,4 +76,5 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("--model", help="model name")
+    parser.add_argument("--r", type=float, help="the limit", default=0)
     main(parser.parse_args())
