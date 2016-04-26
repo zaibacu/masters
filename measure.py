@@ -76,5 +76,5 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("--model", help="model name")
-    parser.add_argument("--r", type=float, help="the limit", default=0)
+    parser.add_argument("-r", type=float, help="the limit", default=0)
     main(parser.parse_args())
