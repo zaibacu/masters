@@ -9,11 +9,11 @@ def select_rand(lst, n):
 
 
 def get_positive(comments, limit):
-    return select_rand([comment for comment in comments if comment.rating == "1"], limit)
+    return select_rand([comment for comment in comments if comment.rating == "1" or comment.rating == 1], limit)
 
 
 def get_negative(comments, limit):
-    return select_rand([comment for comment in comments if comment.rating == "-1"], limit)
+    return select_rand([comment for comment in comments if comment.rating == "-1" or comment.rating == -1], limit)
 
 
 def get_group(comments, train_limit, test_limit):
@@ -29,6 +29,11 @@ def get_group(comments, train_limit, test_limit):
     return training, testing
 
 
+def purge(raw):
+    import re
+    return re.sub(r"[.,!?'\";:/\(\)\n\t]", " ", raw).lower()
+
+
 def main(args):
     r = redis.StrictRedis(host='localhost', port=6379, db=1)
     comments = [pickle.loads(r.get(key)) for key in r.keys("comment:*")]
@@ -37,23 +42,23 @@ def main(args):
 
     with open(args.o1, "w") as f:
         for comment in train_data:
-            text = comment.text
-            f.write("{1}|{0}\n".format(text.replace("\n", " "), comment.rating))
+            text = purge(comment.text)
+            f.write("{1} | {0}\n".format(text.replace("\n", " "), comment.rating))
 
     with open(args.o2, "w") as f:
         for comment in test_data:
-            text = comment.text
-            f.write("{1}|{0}\n".format(text.replace("\n", " "), comment.rating))
+            text = purge(comment.text)
+            f.write("{1} | {0}\n".format(text.replace("\n", " "), comment.rating))
 
     with open(args.f, "w") as f:
         for comment in comments:
-            text = comment.text
+            text = purge(comment.text)
             f.write("{0}\n".format(text))
 
 if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    parser.add_argument("--train", type=int, default=200, help="count of items for train")
+    parser.add_argument("--train", type=int, default=240, help="count of items for train")
     parser.add_argument("--test", type=int, default=50, help="count of items for test")
     parser.add_argument("-o1", help="train output file")
     parser.add_argument("-o2", help="test output file")
