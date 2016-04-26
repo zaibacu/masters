@@ -56,8 +56,8 @@ def test_model(labels, predictions, r):
 
 
 def load_labels():
-    with open("data/comments.test.data", "r") as f:
-        return list([float(line.split(" ", 1)[0]) for line in f.readlines()])
+    with open("data/test.comments", "r") as f:
+        return list([float(line.split(" | ", 1)[0]) for line in f.readlines()])
 
 
 def load_predictions(model):
