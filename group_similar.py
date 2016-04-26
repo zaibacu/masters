@@ -90,7 +90,7 @@ if __name__ == "__main__":
     import sys
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.levenshtein)", default="rank.util.levenshtein")
-    parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 2)", default=2, type=int)
+    parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.stem)", default="rank.util.stem")
+    parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 0)", default=0, type=int)
     parser.add_argument("--debug", help="Show debug output", action="store_true")
     main(parser.parse_args(), sys.stdin, sys.stdout)

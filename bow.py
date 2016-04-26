@@ -121,7 +121,7 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("-f", help="Dictionary file")
-    parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.levenshtein)", default="rank.util.levenshtein")
+    parser.add_argument("--matcher_fn", help="class for matcher function (Default: rank.util.stem)", default="rank.util.stem")
     parser.add_argument("--max_dist", help="maximum distance to assume equal (Default: 0)", default=0)
     parser.add_argument("--label", help="Give label for this BOW", default=None)
     parser.add_argument("--multi", help="Use multiprocess environment for this calc", action="store_true")
