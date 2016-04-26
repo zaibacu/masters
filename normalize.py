@@ -1,4 +1,4 @@
-import stemmer
+from stemmer import stemmer
 
 
 def parse_line(line: str) -> tuple:
@@ -15,7 +15,7 @@ def main(args, _in, _out):
             ]
 
     for label, words in data:
-        _out.write("{0} | {1}".format(label, " ".join([st.stem(w) for w in words])))
+        _out.write("{0} | {1}\n".format(label, " ".join([st.stem(w) for w in words])))
 
 
 if __name__ == "__main__":
