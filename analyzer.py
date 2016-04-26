@@ -12,7 +12,8 @@ def main(args, _in):
     group = df.groupby("label")
     t = group.sum().transpose()
     t["diff"] = abs(t[-1] - t[1])/(t[-1] + t[1])
-    columns = t[t["diff"] > args.n].index
+    t["usage"] = t[-1] + t[1]
+    columns = t[(t["diff"] >= args.n) & (t["usage"] > 5)].index
     with open(args.m, "w") as f:
         f.write("\n".join(columns))
 
