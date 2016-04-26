@@ -31,7 +31,7 @@ def get_group(comments, train_limit, test_limit):
 
 def purge(raw):
     import re
-    return re.sub(r"[.,!?'\";:/\(\)\n\t]", " ", raw).lower()
+    return re.sub(r"([.,!?'\";:/\(\)]|\s)", " ", raw).lower()
 
 
 def main(args):
@@ -43,12 +43,12 @@ def main(args):
     with open(args.o1, "w") as f:
         for comment in train_data:
             text = purge(comment.text)
-            f.write("{1} | {0}\n".format(text.replace("\n", " "), comment.rating))
+            f.write("{1} | {0}\n".format(text, comment.rating))
 
     with open(args.o2, "w") as f:
         for comment in test_data:
             text = purge(comment.text)
-            f.write("{1} | {0}\n".format(text.replace("\n", " "), comment.rating))
+            f.write("{1} | {0}\n".format(text, comment.rating))
 
     with open(args.f, "w") as f:
         for comment in comments:
