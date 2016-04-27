@@ -47,6 +47,10 @@ def main(args, _in, _out):
             if len(line) > 0
             ]
 
+    def get_lemma(word: str) -> str:
+        l, t = lemma.get_lemma(word)
+        return l
+
     def pipe(word: str) -> str:
         from functools import reduce
         rules = []
@@ -60,7 +64,7 @@ def main(args, _in, _out):
             rules.append(purge_common_errors)
 
         if args.lemma:
-            rules.append(lemma.get_lemma)
+            rules.append(get_lemma)
 
         return reduce(lambda s, r: r(s), rules, word)
 
