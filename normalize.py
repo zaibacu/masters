@@ -7,8 +7,12 @@ def parse_line(line: str) -> tuple:
     return label, get_words(text)
 
 
-def purge_accents(word: str) -> str:
+def translate(word: str, mapping: list) -> str:
     from functools import reduce
+    return reduce(lambda s, translation: s.replace(*translation), mapping, word)
+
+
+def purge_accents(word: str) -> str:
     mapping = [
         ("ą", "a"),
         ("č", "c"),
@@ -20,7 +24,18 @@ def purge_accents(word: str) -> str:
         ("ū", "u"),
         ("ž", "z")
     ]
-    return reduce(lambda s, translation: s.replace(*translation), mapping, word)
+    return translate(word, mapping)
+
+
+def purge_common_errors(word: str) -> str:
+    mapping = [
+        ("w", "v"),
+        ("iai", "ei"),
+        ("k", "g"),
+        ("p", "b"),
+        ("i", "j")
+    ]
+    return translate(word, mapping)
 
 
 def main(args, _in, _out):
@@ -31,13 +46,18 @@ def main(args, _in, _out):
             ]
 
     def pipe(word: str) -> str:
+        from functools import reduce
+        rules = []
         if args.stem:
-            word = st.stem(word)
+            rules.append(st.stem)
 
         if args.accents:
-            word = purge_accents(word)
+            rules.append(purge_accents)
 
-        return word
+        if args.common:
+            rules.append(purge_common_errors)
+
+        return reduce(lambda s, r: r(s), rules, word)
 
     for label, words in data:
         _out.write("{0} | {1}\n".format(label, " ".join([pipe(w) for w in words])))
@@ -49,4 +69,5 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--stem", action="store_true", help="Use stemmer?")
     parser.add_argument("--accents", action="store_true", help="Remove accents?")
+    parser.add_argument("--common", action="store_true", help="Remove common errors?")
     main(parser.parse_args(), sys.stdin, sys.stdout)
