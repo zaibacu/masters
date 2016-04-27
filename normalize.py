@@ -39,6 +39,8 @@ def purge_common_errors(word: str) -> str:
 
 
 def main(args, _in, _out):
+    from rank.util.lemma import Lemmator
+    lemma = Lemmator()
     st = stemmer.Stemmer()
     data = [parse_line(line)
             for line in map(lambda x: x.strip(), _in.read().split("\n"))
@@ -57,6 +59,9 @@ def main(args, _in, _out):
         if args.common:
             rules.append(purge_common_errors)
 
+        if args.lemma:
+            rules.append(lemma.get_lemma)
+
         return reduce(lambda s, r: r(s), rules, word)
 
     for label, words in data:
@@ -70,4 +75,5 @@ if __name__ == "__main__":
     parser.add_argument("--stem", action="store_true", help="Use stemmer?")
     parser.add_argument("--accents", action="store_true", help="Remove accents?")
     parser.add_argument("--common", action="store_true", help="Remove common errors?")
+    parser.add_argument("--lemma", action="store_true", help="Replace to lemma?")
     main(parser.parse_args(), sys.stdin, sys.stdout)
