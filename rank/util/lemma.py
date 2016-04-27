@@ -17,8 +17,8 @@ class Lemmator(object):
                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                    "Origin": "http://donelaitis.vdu.lt"
                    }
-        resp = requests.post(url="{0}/main_helper.php?id=4&nr=7_2".format(self.domain), body=data, headers=headers)
-        raw = resp.read().decode("UTF-8")
+        resp = requests.post(url="http://{0}/main_helper.php?id=4&nr=7_2".format(self.domain), data=data, headers=headers)
+        raw = resp.text
         result = self.pattern.search(raw)
         if result:
             return result.group("lemma"), result.group("type")
