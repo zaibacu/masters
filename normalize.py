@@ -51,7 +51,7 @@ def main(args, _in, _out):
         l, t = lemma.get_lemma(word)
         return l
 
-    def pipe(word: str) -> str:
+    def pipe(word: str, index: int, total: int) -> str:
         from functools import reduce
         rules = []
         if args.stem:
@@ -66,10 +66,22 @@ def main(args, _in, _out):
         if args.lemma:
             rules.append(get_lemma)
 
+        if args.position:
+            def get_position():
+                if index < total / 3:
+                    return "S"
+                elif index < total * 2 / 3:
+                    return "M"
+                else:
+                    return "E"
+            rules.append(lambda x: "{0}_{1}".format(x, get_position()))
+
         return reduce(lambda s, r: r(s), rules, word)
 
     for label, words in data:
-        _out.write("{0} | {1}\n".format(label, " ".join([pipe(w) for w in words])))
+        lst = list(words)
+        cnt = len(lst)
+        _out.write("{0} | {1}\n".format(label, " ".join([pipe(w, index, cnt) for index, w in enumerate(lst)])))
 
 
 if __name__ == "__main__":
@@ -80,4 +92,5 @@ if __name__ == "__main__":
     parser.add_argument("--accents", action="store_true", help="Remove accents?")
     parser.add_argument("--common", action="store_true", help="Remove common errors?")
     parser.add_argument("--lemma", action="store_true", help="Replace to lemma?")
+    parser.add_argument("--position", action="store_true", help="Add position for word?")
     main(parser.parse_args(), sys.stdin, sys.stdout)
