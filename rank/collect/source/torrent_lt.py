@@ -28,6 +28,9 @@ class TorrentLtSource(Base):
         for bs, url in self.reader.scrape():
             if "torrents" in url:  # Torrents list
                 root = bs.find("table", {"class": "torrents_table"})
+                if not root:
+                    continue
+
                 movies = root.findAll("tr")
                 movie_links = [tag.find("a")["href"]
                                for movie in movies
