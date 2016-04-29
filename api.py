@@ -35,7 +35,10 @@ async def load_score(title):
     from score import score, parse_num
 
     logger.debug("Calculating score")
-    std, mean, median = score([parse_num(line) for line in result.decode("UTF-8").split("\n")], base=10, limit=0.1)
+    ratings = [parse_num(line) for line in result.decode("UTF-8").split("\n")]
+    for r, c in zip(ratings, data):
+        logger.debug("Rating: {0}, Comment: {1}".format(r, c))
+    mean = score(ratings[:-1], base=10)
     return True, str(mean)
 
 
