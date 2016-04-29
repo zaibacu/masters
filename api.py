@@ -5,15 +5,38 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 
-def validate_token(token):
+async def validate_token(token):
     if token == "demo123":
         return True, "OK"
     else:
         return False, "FAIL"
 
 
-def load_score(title):
-    return True, "60%"
+async def load_score(title):
+    import asyncio
+    from rank.util import purge
+    from rank.collect.movie import get_comments
+    loop = asyncio.get_event_loop()
+    data = get_comments(title.strip())
+    lines = ["| {0}".format(purge(comment)) for comment in data]
+
+    logger.debug("Got comments")
+    create = asyncio.create_subprocess_exec("vw", "-c", "-k", "-t", "-i", "data/raw.vw", "-p", "/dev/stdout", "--quiet",
+                                            stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
+
+    logger.debug("Creating classifier")
+    proc = await create
+    proc.stdin.write("\n".join(lines).encode("UTF-8"))
+    await proc.stdin.drain()
+    proc.stdin.close()
+    result = await proc.stdout.read()
+    await proc.wait()
+
+    from score import score, parse_num
+
+    logger.debug("Calculating score")
+    std, mean, median = score([parse_num(line) for line in result.decode("UTF-8").split("\n")], base=10, limit=0.1)
+    return True, str(mean)
 
 
 def handle_error(ws):
@@ -21,7 +44,7 @@ def handle_error(ws):
 
 
 async def ws_handler(request):
-    ws = web.WebSocketResponse()
+    ws = web.WebSocketResponse(timeout=60)
     await ws.prepare(request)
 
     pipeline = iter([validate_token, load_score])
@@ -32,7 +55,7 @@ async def ws_handler(request):
             if msg == "close":
                 await ws.close()
             else:
-                result, msg = cmd(msg.data)
+                result, msg = await cmd(msg.data)
                 ws.send_str(msg)
                 if not result:
                     await ws.close()
