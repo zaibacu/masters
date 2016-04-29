@@ -21,3 +21,8 @@ def chars(w1: str, w2: str) -> int:
                 for c1, c2 in zip_longest(w1, w2)
                 if c1 != c2
                 ])
+
+
+def purge(raw):
+    import re
+    return re.sub(r"([.,!?'\";:/\(\)]|\s)", " ", raw).lower()
