@@ -29,7 +29,7 @@ def score(numbers: list, base: int) -> list:
 
 def main(args, _in, _out):
     numbers = [parse_num(num) for num in _in.read().split("\n")]
-    _out.write("{0}\n".format(score(numbers, args.base, args.limit)))
+    _out.write("{0}\n".format(score(numbers, args.base)))
 
 if __name__ == "__main__":
     import sys
