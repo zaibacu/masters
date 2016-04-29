@@ -7,3 +7,5 @@ redis
 python-Levenshtein
 pandas
 numpy
+aiohttp
+gunicorn
