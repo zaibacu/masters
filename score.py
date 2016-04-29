@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 logger = logging.getLogger(__name__)
 
 
@@ -13,26 +14,17 @@ def parse_num(n: str) -> float:
         return 0
 
 
-def score(numbers: list, base: int, limit: int) -> list:
-    import pandas as pd
-    import numpy as np
-    df = pd.Series(numbers)
-    dist = np.random.normal(0, 0.5, 1000)
+def get_slices(lst, n):
+    for i in range(0, len(lst), n):
+        items = list(filter(lambda x: abs(x) > 0.1, lst[i:i+n]))
+        s = np.array(items)
+        fillers = list([s.mean() for i in range(0, n - s.size)])
+        yield list(map(lambda x: 1 if x > 0 else 0, items + fillers))
 
-    def find_percentile(x: float) -> float:
-        quantiles = list(np.arange(1, 0, -0.01))
-        for q in quantiles:
-            curve = pd.Series(dist).quantile(q=q)
-            if x >= curve:
-                return q
-        return 0
 
-    def transform(x):
-        return find_percentile(x) * 10
-
-    data = map(transform, filter(lambda x: abs(0 - x) > limit, numbers))
-    df = pd.Series(data)
-    return [df.std(), df.mean(), df.median()]
+def score(numbers: list, base: int) -> list:
+    result = np.array([sum(s) for s in get_slices(numbers, base)])
+    return result.mean()
 
 
 def main(args, _in, _out):
@@ -44,5 +36,4 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("--base", type=int, default=10, help="On what scale we want to base our score")
-    parser.add_argument("--limit", type=float, default=0.1, help="Minimum delta from 0 to accept score")
     main(parser.parse_args(), sys.stdin, sys.stdout)
