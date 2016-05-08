@@ -16,4 +16,9 @@ demo.controller("SearchCtrl", function($scope, SearchService){
 			$scope.results = result.data;
 		});
 	};
+
+	$scope.doCalc = function(object){
+		$scope.results = [];
+		$scope.search.title = object[0] + " - " + object[1];
+	};
 });
