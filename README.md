@@ -23,3 +23,7 @@ Training
 Prediction
 ==========
 `vw -t -i data/model.vw data/comments.data -p pred.txt --quiet`
+
+Starting API
+============
+`gunicorn api:api --bind localhost:8080 --worker-class aiohttp.worker.GunicornWebWorker`
