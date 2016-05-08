@@ -69,6 +69,24 @@ async def ws_handler(request):
 
     return ws
 
+
+async def search_handler(request):
+    title = request.match_info.get("title", None)
+    if title:
+        import os
+
+        token = os.getenv("tmdb_token")
+        q = title.replace(" ", "+")
+        url = "https://api.themoviedb.org/3/search/movie?query={0}&api_key={1}".format(q, token)
+        with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                data = await response.json()
+                result = list(map(lambda x: (x["original_title"], x["release_date"].split("-")[0]), data["results"]))
+                return web.json_response(result)
+
+    return web.Response(status=204)
+
 api = web.Application()
 
 api.router.add_route("GET", "/", ws_handler)
+api.router.add_route("GET", "/search/{title}", search_handler)
