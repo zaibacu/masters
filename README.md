@@ -27,3 +27,11 @@ Prediction
 Starting API
 ============
 `gunicorn api:api --bind localhost:8080 --worker-class aiohttp.worker.GunicornWebWorker`
+
+Environment Variables
+=====================
+`lm_user` - linkomanija.net user 
+`lm_pass` - linkomanija.net password
+`torrentlt_user` - torrent.ai user
+`torrentlt_pass` - torrent.ai password
+`tmdb_token` - auth token for TMDB API
